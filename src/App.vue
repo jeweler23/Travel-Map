@@ -3,7 +3,7 @@
   <Title />
   <!-- <Country v-if="show" :country="infoCountry" :index="indexCountry"/> -->
   <Country :country="infoCountry" :index="indexCountry" />
-  <Map @showInfo="showInfo" @latlngCountry="latlngCountry" />
+  <Map @showInfo="showInfo" @getCoordsCountries="getIdCountries" />
 </template>
 
 <script setup>
@@ -26,7 +26,7 @@ const showInfo = (accept) => {
 };
 
 //
-function getCountry(lat,lng) {
+function getNameCountry(lat, lng) {
   //отпраляем запрос на основе полученных координат и записываем в перемененую
   fetch(
     `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&limit=${3}&appid=${API_KEY}`
@@ -37,7 +37,7 @@ function getCountry(lat,lng) {
   console.log(JSON.parse(JSON.stringify(country.value)));
 }
 
-function resultIndexCountry(country, infoCountry) {
+function resultIdCountry(country, infoCountry) {
   console.log(country, infoCountry);
   let i = 0;
   if (!country || country == null) {
@@ -53,16 +53,15 @@ function resultIndexCountry(country, infoCountry) {
   return i;
 }
 
-function latlngCountry (coord){
-  getCountry(coord.lat,coord.lng)
-//   console.log(coord.lat, coord.lng);
-  indexCountry.value = resultIndexCountry(
+function getIdCountries(coord) {
+  getNameCountry(coord.lat, coord.lng);
+  indexCountry.value = resultIdCountry(
     JSON.parse(JSON.stringify(country.value)),
     infoCountry
   );
 
   console.log(indexCountry.value);
-};
+}
 
 // onMounted(latlngCountry)
 </script>

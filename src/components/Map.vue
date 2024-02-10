@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 import L from "leaflet";
 
-const emit = defineEmits(["latlngCountry","showInfo"]);
+const emit = defineEmits(["latlngCountry", "showInfo"]);
 
 const mapContainer = ref(null);
 const show = ref(false);
@@ -23,12 +23,12 @@ function mapLayout() {
 }
 
 function showToggle() {
-  show.value = !show.value
-  emit('showInfo',show)
+  show.value = !show.value;
+  emit("showInfo", show);
 }
 
 function latlngC(e) {
-  emit("latlngCountry", e.latlng);
+  emit("getCoordsCountries", e.latlng);
 }
 
 onMounted(() => {

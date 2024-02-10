@@ -15,6 +15,15 @@ const props = defineProps({
 console.log(props.country[props.index]);
 
 const imageUrl = props.country[props.index].flags.png; // url flag
+const imagg = ref(new URL("../../public/favicon/favicon-32x32.png"));
+// const imageSrc = ref([
+//   "../../public/favicon/favicon-32x32.png",
+//   "../assets/image/moscow-city.jpg",
+//   "../assets/image/Bolgar.jpg",
+//   "../assets/image/forest.jpg",
+//   "../assets/image/baikal.jpg",
+//   "../assets/image/monastery-slov.jpg",
+// ]);
 </script>
 <template>
   <div class="card container" @click="$emit('showInfo', showInfoCountry)">
@@ -35,14 +44,17 @@ const imageUrl = props.country[props.index].flags.png; // url flag
         границах составляет 17 098 246 км²
       </div>
     </div>
-
+    <p v-for="image of imageSrc">{{ image }}</p>
     <div class="image-grid">
-      <img src="../assets/image/teriberka.jpg" alt="" />
-      <img src="../assets/image/moscow-city.jpg" alt="" />
-      <img src="../assets/image/Bolgar.jpg" alt="" />
-      <img src="../assets/image/forest.jpg" alt="" />
-      <img src="../assets/image/baikal.jpg" alt="" />
-      <img src="../assets/image/monastery-slov.jpg" alt="" />
+      <img :src="imagg" alt="" />
+      <!-- <img :src="`${imageSrc[0]}`" alt="" /> -->
+      <!-- <span>{{ image }}</span> -->
+      <!-- <img src="@/assets/image/teriberka.jpg" alt="" />
+      <img src="@/assets/image/moscow-city.jpg" alt="" />
+      <img src="@/assets/image/Bolgar.jpg" alt="" />
+      <img src="@/assets/image/forest.jpg" alt="" />
+      <img src="@/assets/image/baikal.jpg" alt="" />
+      <img src="@/assets/image/monastery-slov.jpg" alt="" /> -->
     </div>
 
     <div class="link-card">
