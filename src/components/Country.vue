@@ -19,10 +19,10 @@ const imageUrl = props.country[props.index].flags.png; // url flag
 
 const imageSrc = ref([
   new URL("@/assets/image/teriberka.jpg", import.meta.url).href,
-  new URL("../assets/image/Bolgar.jpg", import.meta.url).href,
-  new URL("../assets/image/baikal.jpg", import.meta.url).href,
-  new URL("../assets/image/monastery-slov.jpg", import.meta.url).href,
-  new URL("../assets/image/moscow-city.jpg", import.meta.url).href,
+  new URL("@/assets/image/Bolgar.jpg", import.meta.url).href,
+  new URL("@/assets/image/baikal.jpg", import.meta.url).href,
+  new URL("@/assets/image/monastery-slov.jpg", import.meta.url).href,
+  new URL("@/assets/image/moscow-city.jpg", import.meta.url).href,
 ]);
 
 </script>
@@ -34,7 +34,6 @@ const imageSrc = ref([
           class="flag"
           :style="`background-image: url(${country[index].flags.png})`"
         >
-          <!-- <img src= "`${imageUrl}`" alt="Russia Flag" /> -->
         </div>
         <h3 class="country-name" style="margin-left: 20px; font-size: 32px">
           {{ country[index].name.common }}

@@ -1,8 +1,7 @@
 <template>
   <Logo />
   <Title />
-  <!-- <Country v-if="show" :country="infoCountry" :index="indexCountry"/> -->
-  <Country :country="infoCountry" :index="indexCountry" />
+  <Country :country="infoCountries" :index="indexCountry" />
   <Map @showInfo="showInfo" @getCoordsCountries="getIdCountries" />
 </template>
 
@@ -11,34 +10,34 @@ import Logo from "@/components/Logo.vue";
 import Map from "@/components/Map.vue";
 import Title from "@/components/Title.vue";
 import Country from "@/components/Country.vue";
-import { infoCountry } from "./assets/consts/index.js";
+import { infoCountries } from "@/assets/consts/index.js";
+import { API_KEY } from "@/assets/consts/consts";
 import { ref } from "vue";
-import { API_KEY } from "./assets/consts/consts";
 
 const show = ref(false);
-// let pressCountry = 0;
-let country = ref(null);
-let indexCountry = ref(203);
-let latCountry = ref(55);
-let lngCountry = ref(35);
+//
+const indexCountry = ref(203);
+
+
 const showInfo = (accept) => {
   show.value = accept.value;
 };
 
 //
-function getNameCountry(lat, lng) {
-  //отпраляем запрос на основе полученных координат и записываем в перемененую
-  fetch(
-    `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&limit=${3}&appid=${API_KEY}`
-  )
-    .then((response) => response.json())
-    // .then((data) => (country.value = data));
-    .then((data) => (country.value = data));
-  console.log(JSON.parse(JSON.stringify(country.value)));
+async function getNameCountry(lat, lng) {
+  try {
+    //отпраляем запрос на основе полученных координат и записываем в перемененую
+    const response = await fetch(
+      `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&limit=${3}&appid=${API_KEY}`
+    );
+    const data = response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function resultIdCountry(country, infoCountry) {
-  console.log(country, infoCountry);
   let i = 0;
   if (!country || country == null) {
     return 203;
@@ -49,21 +48,13 @@ function resultIdCountry(country, infoCountry) {
     }
     i = index;
   });
-  console.log(i);
   return i;
 }
 
-function getIdCountries(coord) {
-  getNameCountry(coord.lat, coord.lng);
-  indexCountry.value = resultIdCountry(
-    JSON.parse(JSON.stringify(country.value)),
-    infoCountry
-  );
-
-  console.log(indexCountry.value);
+async function getIdCountries(coord) {
+  const country = await getNameCountry(coord.lat, coord.lng);
+  indexCountry.value = resultIdCountry(country, infoCountries);
 }
-
-// onMounted(latlngCountry)
 </script>
 
 <style scoped></style>
