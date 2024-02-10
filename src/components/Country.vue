@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import fs from "fs";
 
 const props = defineProps({
   country: {
@@ -15,15 +16,15 @@ const props = defineProps({
 console.log(props.country[props.index]);
 
 const imageUrl = props.country[props.index].flags.png; // url flag
-const imagg = ref(new URL("../../public/favicon/favicon-32x32.png"));
-// const imageSrc = ref([
-//   "../../public/favicon/favicon-32x32.png",
-//   "../assets/image/moscow-city.jpg",
-//   "../assets/image/Bolgar.jpg",
-//   "../assets/image/forest.jpg",
-//   "../assets/image/baikal.jpg",
-//   "../assets/image/monastery-slov.jpg",
-// ]);
+
+const imageSrc = ref([
+  new URL("@/assets/image/teriberka.jpg", import.meta.url).href,
+  new URL("../assets/image/Bolgar.jpg", import.meta.url).href,
+  new URL("../assets/image/baikal.jpg", import.meta.url).href,
+  new URL("../assets/image/monastery-slov.jpg", import.meta.url).href,
+  new URL("../assets/image/moscow-city.jpg", import.meta.url).href,
+]);
+
 </script>
 <template>
   <div class="card container" @click="$emit('showInfo', showInfoCountry)">
@@ -44,17 +45,9 @@ const imagg = ref(new URL("../../public/favicon/favicon-32x32.png"));
         границах составляет 17 098 246 км²
       </div>
     </div>
-    <p v-for="image of imageSrc">{{ image }}</p>
+    <!-- <p v-for="image of imageSrc">{{ image }}</p> -->
     <div class="image-grid">
-      <img :src="imagg" alt="" />
-      <!-- <img :src="`${imageSrc[0]}`" alt="" /> -->
-      <!-- <span>{{ image }}</span> -->
-      <!-- <img src="@/assets/image/teriberka.jpg" alt="" />
-      <img src="@/assets/image/moscow-city.jpg" alt="" />
-      <img src="@/assets/image/Bolgar.jpg" alt="" />
-      <img src="@/assets/image/forest.jpg" alt="" />
-      <img src="@/assets/image/baikal.jpg" alt="" />
-      <img src="@/assets/image/monastery-slov.jpg" alt="" /> -->
+      <img v-for="image of imageSrc" :src="image" alt="" />
     </div>
 
     <div class="link-card">
