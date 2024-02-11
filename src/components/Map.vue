@@ -14,7 +14,7 @@ const emit = defineEmits(["getCoordsCountries", "showInfo"]);
 
 const mapContainer = ref(null);
 const show = ref(false);
-let map;
+let map, marker;
 
 function mapLayout() {
   // Создаем карту
@@ -26,10 +26,11 @@ function mapLayout() {
   }).addTo(map);
 
   // Добавляем маркер
-  L.marker([55.7558, 37.6176]).addTo(map).bindPopup("Moscow, Russia");
+  marker = L.marker(JSON.parse(JSON.stringify(props.capitalMarker)))
+    .addTo(map)
+    .bindPopup("Moscow, Russia");
   map.on("click", showToggle);
   map.on("click", latlngC);
-  map.on("click", click);
 }
 
 function showToggle() {
@@ -41,23 +42,20 @@ function latlngC(e) {
   emit("getCoordsCountries", e.latlng);
 }
 
-function click() {
-  // const marker = new L.Marker([55.7558, 30]);
-  map.addLayer(marker);
-  // marker.bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
-}
-
 onMounted(() => {
   mapLayout();
 });
 
-onBeforeUpdate(() => {
-  // console.log(props.capitalMarker);
-  // L.marker(JSON.parse(JSON.stringify(props.capitalMarker))).remove(map)
-});
+onBeforeUpdate(() => {});
+
 onUpdated(() => {
-  console.log(props.capitalMarker);
-  L.marker(JSON.parse(JSON.stringify(props.capitalMarker))).addTo(map).bindPopup("Moscow, Russia");
+  if (marker) {
+    map.removeLayer(marker);
+  }
+
+  marker = L.marker(JSON.parse(JSON.stringify(props.capitalMarker)))
+    .addTo(map)
+    .bindPopup("Moscow, Russia");
 });
 </script>
 
