@@ -41,11 +41,9 @@ const imageSrc = ref([
         границах составляет 17 098 246 км²
       </div>
     </div>
-    <!-- <p v-for="image of imageSrc">{{ image }}</p> -->
     <div class="image-grid">
       <img v-for="image of imageSrc" :src="image" alt="" />
     </div>
-
     <div class="link-card">
       <h3>Интересные заведения</h3>
       <a href="https://casadifamiglia.ru/" class="link"

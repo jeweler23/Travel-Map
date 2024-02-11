@@ -67,7 +67,6 @@ onUpdated(() => {
 </script>
 
 <template>
-  <!-- <div ref="mapContainer" class="map" @click="showToggle" ></div> -->
   <div ref="mapContainer" class="map"></div>
 </template>
 
