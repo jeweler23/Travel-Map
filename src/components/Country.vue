@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from "vue";
-import fs from "fs";
 
 const props = defineProps({
   country: {
@@ -12,8 +11,6 @@ const props = defineProps({
     required: true,
   },
 });
-
-console.log(props.country[props.index]);
 
 const imageUrl = props.country[props.index].flags.png; // url flag
 

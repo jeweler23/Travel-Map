@@ -2,7 +2,11 @@
   <Logo />
   <Title />
   <Country :country="infoCountries" :index="indexCountry" />
-  <Map @showInfo="showInfo" @getCoordsCountries="getIdCountries" />
+  <Map
+    @showInfo="showInfo"
+    @getCoordsCountries="getIdCountries"
+    :capitalMarker="capitalCoords" 
+  />
 </template>
 
 <script setup>
@@ -15,9 +19,9 @@ import { API_KEY } from "@/assets/consts/consts";
 import { ref } from "vue";
 
 const show = ref(false);
-//
 const indexCountry = ref(203);
 
+const capitalCoords = ref([55.7558, 37.6176]);
 
 const showInfo = (accept) => {
   show.value = accept.value;
@@ -51,9 +55,16 @@ function resultIdCountry(country, infoCountry) {
   return i;
 }
 
+function getCoordsCapital(countries,index){
+  return countries[index].capitalInfo.latlng
+}
+
 async function getIdCountries(coord) {
   const country = await getNameCountry(coord.lat, coord.lng);
   indexCountry.value = resultIdCountry(country, infoCountries);
+  // console.log(capitalCoords.value);
+  capitalCoords.value = getCoordsCapital(infoCountries,indexCountry.value);
+  console.log(capitalCoords.value);
 }
 </script>
 
