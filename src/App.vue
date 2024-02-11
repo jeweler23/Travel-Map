@@ -5,7 +5,9 @@
   <Map
     @showInfo="showInfo"
     @getCoordsCountries="getIdCountries"
-    :capitalMarker="capitalCoords" 
+    :capitalMarker="capitalCoords"
+    :country="infoCountries"
+    :index="indexCountry"
   />
 </template>
 
@@ -55,16 +57,14 @@ function resultIdCountry(country, infoCountry) {
   return i;
 }
 
-function getCoordsCapital(countries,index){
-  return countries[index].capitalInfo.latlng
+function getCoordsCapital(countries, index) {
+  return countries[index].capitalInfo.latlng;
 }
 
 async function getIdCountries(coord) {
   const country = await getNameCountry(coord.lat, coord.lng);
   indexCountry.value = resultIdCountry(country, infoCountries);
-  // console.log(capitalCoords.value);
-  capitalCoords.value = getCoordsCapital(infoCountries,indexCountry.value);
-  console.log(capitalCoords.value);
+  capitalCoords.value = getCoordsCapital(infoCountries, indexCountry.value);
 }
 </script>
 

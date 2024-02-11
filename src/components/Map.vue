@@ -7,8 +7,16 @@ const props = defineProps({
     type: [Array, null],
     required: true,
   },
+  country: {
+    type: [Object, null],
+    required: true,
+  },
+  index: {
+    type: Number,
+    required: true,
+  },
 });
-console.log(JSON.parse(JSON.stringify(props.capitalMarker)));
+
 
 const emit = defineEmits(["getCoordsCountries", "showInfo"]);
 
@@ -42,20 +50,19 @@ function latlngC(e) {
   emit("getCoordsCountries", e.latlng);
 }
 
-onMounted(() => {
-  mapLayout();
-});
+onMounted(mapLayout);
 
 onBeforeUpdate(() => {});
 
 onUpdated(() => {
+  console.log(props.country,props.index);
   if (marker) {
     map.removeLayer(marker);
   }
 
   marker = L.marker(JSON.parse(JSON.stringify(props.capitalMarker)))
     .addTo(map)
-    .bindPopup("Moscow, Russia");
+    .bindPopup(`${props.country[props.index].capital[0]}, ${props.country[props.index].name.common}`);
 });
 </script>
 
