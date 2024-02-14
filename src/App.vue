@@ -21,7 +21,7 @@ import { API_KEY } from "@/assets/consts/consts";
 import { ref } from "vue";
 
 const show = ref(false);
-const indexCountry = ref(203);
+const indexCountry = ref(124);
 
 const capitalCoords = ref([55.7558, 37.6176]);
 
@@ -46,7 +46,7 @@ async function getNameCountry(lat, lng) {
 function resultIdCountry(country, infoCountry) {
   let i = 0;
   if (!country || country == null) {
-    return 203;
+    return 124;
   }
   infoCountry.forEach((element, index) => {
     if (element.altSpellings[0] !== country[0].country) {
