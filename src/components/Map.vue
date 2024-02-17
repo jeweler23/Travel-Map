@@ -55,11 +55,9 @@ onMounted(mapLayout);
 onBeforeUpdate(() => {});
 
 onUpdated(() => {
-  console.log(props.country,props.index);
   if (marker) {
     map.removeLayer(marker);
   }
-
   marker = L.marker(JSON.parse(JSON.stringify(props.capitalMarker)))
     .addTo(map)
     .bindPopup(`${props.country[props.index].capital[0]}, ${props.country[props.index].name.common}`);
