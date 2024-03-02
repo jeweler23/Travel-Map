@@ -7,7 +7,7 @@ const props = defineProps({
     type: [Array, null],
     required: true,
   },
-  country: {
+  infoCountries: {
     type: [Object, null],
     required: true,
   },
@@ -52,7 +52,6 @@ function latlngC(e) {
 
 onMounted(mapLayout);
 
-onBeforeUpdate(() => {});
 
 onUpdated(() => {
   if (marker) {
@@ -60,7 +59,7 @@ onUpdated(() => {
   }
   marker = L.marker(JSON.parse(JSON.stringify(props.capitalMarker)))
     .addTo(map)
-    .bindPopup(`${props.country[props.index].capital[0]}, ${props.country[props.index].name.common}`);
+    .bindPopup(`${props.infoCountries[props.index].capital[0]}, ${props.infoCountries[props.index].name.common}`);
 });
 </script>
 

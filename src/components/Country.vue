@@ -1,8 +1,8 @@
 <script setup>
-import { ref } from "vue";
+import { onBeforeUpdate, ref, watch } from "vue";
 
 const props = defineProps({
-  country: {
+  infoCountries: {
     type: [Object, null],
     required: true,
   },
@@ -10,18 +10,19 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  selectPlace: Object,
 });
 
-const imageUrl = props.country[props.index].flags.png; // url flag
+const aa = ref(props.selectPlace);
 
-const imageSrc = ref([
-  new URL("@/assets/image/teriberka.jpg", import.meta.url).href,
-  new URL("@/assets/image/Bolgar.jpg", import.meta.url).href,
-  new URL("@/assets/image/baikal.jpg", import.meta.url).href,
-  new URL("@/assets/image/monastery-slov.jpg", import.meta.url).href,
-  new URL("@/assets/image/moscow-city.jpg", import.meta.url).href,
-]);
-
+watch(
+  aa,
+  () => {
+    console.log(aa.value);
+  },
+  { deep: true }
+);
+// console.log(props.country[props.index]);
 </script>
 <template>
   <div class="card container" @click="$emit('showInfo', showInfoCountry)">
@@ -29,32 +30,18 @@ const imageSrc = ref([
       <div class="country-head">
         <div
           class="flag"
-          :style="`background-image: url(${country[index].flags.png})`"
-        >
-        </div>
-        <h3 class="country-name" style="margin-left: 20px; font-size: 32px">
-          {{ country[index].name.common }}
-        </h3>
+          :style="`background-image: url(${infoCountries[index].flags.png})`"
+        ></div>
+        <h2 class="country-name" style="margin-left: 20px; font-size: 32px">
+          {{ infoCountries[index].name.common }}
+        </h2>
       </div>
-      <div class="description">
-        Крупнейшее государство в мире, её территория в международно признанных
-        границах составляет 17 098 246 км²
+      <div class="country-description">
+        <h3>Capital - {{ infoCountries[index].capital[0] }}</h3>
+
+        <p> State - {{ aa }}</p>
+        <span>Name - {{ aa }}</span>
       </div>
-    </div>
-    <div class="image-grid">
-      <img v-for="image of imageSrc" :src="image" alt="" />
-    </div>
-    <div class="link-card">
-      <h3>Интересные заведения</h3>
-      <a href="https://casadifamiglia.ru/" class="link"
-        >Casa di famiglia, Москва</a
-      >
-      <a href="https://st-petersburg.danslenoir.com/" class="link"
-        >Dans Le Noir, Санкт-Петербург</a
-      >
-      <a href="https://example.com/link3" class="link"
-        >Utka v kotlete, Казань</a
-      >
     </div>
   </div>
 </template>
@@ -69,11 +56,12 @@ const imageSrc = ref([
   border-radius: 8px;
   text-align: center;
   transform: translateY(-50%);
+  width: 30%;
 }
 .country-head {
   display: flex;
-  flex-direction: row;
-  justify-content: start;
+
+  justify-content: center;
   align-items: center;
   width: 100%;
   padding: 20px;
@@ -90,15 +78,7 @@ const imageSrc = ref([
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
-  /* background-image: url("`${country[203].flags.png}`") */
 }
-/* .flag img {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  border-radius: 50%;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-} */
 
 .country-card {
   margin-bottom: 10px;

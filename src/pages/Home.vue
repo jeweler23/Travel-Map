@@ -1,14 +1,20 @@
 <template>
-  <Logo />
-  <Title />
-  <Country :country="infoCountries" :index="indexCountry" />
-  <Map
-    @showInfo="showInfo"
-    @getCoordsCountries="getIdCountries"
-    :capitalMarker="capitalCoords"
-    :country="infoCountries"
-    :index="indexCountry"
-  />
+  <div>
+    <Logo />
+    <Title />
+    <Country
+      :infoCountries="infoCountries"
+      :index="indexCountry"
+      :selectPlace="selectPlace"
+    />
+    <Map
+      @showInfo="showInfo"
+      @getCoordsCountries="getIdCountries"
+      :capitalMarker="capitalCoords"
+      :infoCountries="infoCountries"
+      :index="indexCountry"
+    />
+  </div>
 </template>
 
 <script setup>
@@ -24,6 +30,7 @@ const countriesStore = useCountriesStore();
 
 const show = ref(false);
 const indexCountry = ref(203);
+const selectPlace = ref(null);
 const capitalCoords = ref([55.7558, 37.6176]);
 
 const showInfo = (accept) => {
@@ -36,6 +43,7 @@ function getCoordsCapital(countries, index) {
 
 async function getIdCountries(coord) {
   await countriesStore.getInfoCountry(coord.lat, coord.lng);
+  selectPlace.value = countriesStore.country;
   const country = countriesStore.country;
   indexCountry.value = countriesStore.resultIdCountry(
     country._value,
