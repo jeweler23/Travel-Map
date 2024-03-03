@@ -42,22 +42,22 @@ setInterval(() => {
         </h2>
       </div>
       <div class="country-description">
-        <h3 class="info-about-place">
+        <h2 class="info-about-place">
           <img
             src="../assets/image/architecture-and-city.png"
             alt=""
             style="width: 40px"
           />
           Capital - {{ infoCountries[index].capital[0] }}
-        </h3>
+        </h2>
 
-        <p v-if="region" style="margin-top: 20px" class="info-about-place">
+        <h3 v-if="region" style="margin-top: 20px" class="info-about-place">
           <img
             src="../assets/image/empire-state-building.png"
             alt=""
             style="width: 40px"
           />State - {{ region }}
-        </p>
+        </h3>
         <p v-if="namePlace" style="" class="info-about-place">
           <img
             src="../assets/image/location (1).png"
