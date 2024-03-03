@@ -10,10 +10,14 @@ export const useCountriesStore =
 
     // получаем страну по координатам
     const getInfoCountry = async (lat, lng) => {
-      const response = await fetch(
-        `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&limit=${3}&appid=${API_KEY}`
-      );
-      country.value = await response.json();
+      try {
+        const response = await fetch(
+          `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&limit=${3}&appid=${API_KEY}`
+        );
+        country.value = await response.json();
+      } catch (e) {
+        console.log(e);
+      }
     };
 
     // получаем инфомарцию о стране
@@ -37,5 +41,18 @@ export const useCountriesStore =
       return i;
     };
 
-    return { country, getInfoCountry, resultIdCountry };
+    const getDayliForecast = async (lat, lng) => {
+      try {
+        const response = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&exclude={daily}&appid=${API_KEY}`
+        );
+        const data = await response.json();
+        console.log(Math.round(Number(data.main.temp) - 273), data.timezone);
+        return [Math.round(Number(data.main.temp) - 273), data.timezone];
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    return { country, getInfoCountry, resultIdCountry, getDayliForecast };
   });

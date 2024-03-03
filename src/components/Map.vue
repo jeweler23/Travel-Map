@@ -17,8 +17,11 @@ const props = defineProps({
   },
 });
 
-
-const emit = defineEmits(["getCoordsCountries", "showInfo"]);
+const emit = defineEmits([
+  "getCoordsCountries",
+  "showInfo",
+  "getDayliForecast",
+]);
 
 const mapContainer = ref(null);
 const show = ref(false);
@@ -48,10 +51,10 @@ function showToggle() {
 
 function latlngC(e) {
   emit("getCoordsCountries", e.latlng);
+  // emit('getDayliForecast',e.latlng)
 }
 
 onMounted(mapLayout);
-
 
 onUpdated(() => {
   if (marker) {
@@ -59,7 +62,11 @@ onUpdated(() => {
   }
   marker = L.marker(JSON.parse(JSON.stringify(props.capitalMarker)))
     .addTo(map)
-    .bindPopup(`${props.infoCountries[props.index].capital[0]}, ${props.infoCountries[props.index].name.common}`);
+    .bindPopup(
+      `${props.infoCountries[props.index].capital[0]}, ${
+        props.infoCountries[props.index].name.common
+      }`
+    );
 });
 </script>
 

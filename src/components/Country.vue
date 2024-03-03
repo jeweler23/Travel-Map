@@ -1,6 +1,7 @@
 <script setup>
-import { onBeforeUpdate, ref, watch } from "vue";
-
+import { computed, onBeforeUpdate, ref, watch } from "vue";
+// import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+// import { faHouse } from "@awesome.me/kit-KIT_CODE/icons/classic/solid";
 const props = defineProps({
   infoCountries: {
     type: [Object, null],
@@ -10,19 +11,23 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-  selectPlace: Object,
+  region: String,
+  namePlace: String,
+  tempInPlace: Number,
+  timezonePlace: Number,
 });
 
-const aa = ref(props.selectPlace);
+const nowDate = ref(new Date());
+const nowHours = ref(null);
+const nowSeconds = ref(null);
+const nowMinutes = ref(null);
 
-watch(
-  aa,
-  () => {
-    console.log(aa.value);
-  },
-  { deep: true }
-);
-// console.log(props.country[props.index]);
+setInterval(() => {
+  nowHours.value = props.timezonePlace / 3600 + nowDate.value.getUTCHours();
+  nowMinutes.value = nowDate.value.getMinutes();
+  nowSeconds.value = nowDate.value.getSeconds();
+  nowDate.value = new Date();
+}, 1000);
 </script>
 <template>
   <div class="card container" @click="$emit('showInfo', showInfoCountry)">
@@ -37,10 +42,45 @@ watch(
         </h2>
       </div>
       <div class="country-description">
-        <h3>Capital - {{ infoCountries[index].capital[0] }}</h3>
+        <h3 class="info-about-place">
+          <img
+            src="../assets/image/architecture-and-city.png"
+            alt=""
+            style="width: 40px"
+          />
+          Capital - {{ infoCountries[index].capital[0] }}
+        </h3>
 
-        <p> State - {{ aa }}</p>
-        <span>Name - {{ aa }}</span>
+        <p v-if="region" style="margin-top: 20px" class="info-about-place">
+          <img
+            src="../assets/image/empire-state-building.png"
+            alt=""
+            style="width: 40px"
+          />State - {{ region }}
+        </p>
+        <p v-if="namePlace" style="" class="info-about-place">
+          <img
+            src="../assets/image/location (1).png"
+            alt=""
+            style="width: 40px"
+          />
+          Place - {{ namePlace }}
+        </p>
+        <p v-if="namePlace" style="" class="info-about-place">
+          <img
+            src="../assets/image/weather-forecast.png"
+            alt=""
+            style="width: 40px"
+          />
+          Temperature - {{ tempInPlace }} &deg;C
+        </p>
+        <span class="info-about-place">
+          <img
+            src="../assets/image/clock (1).png"
+            alt=""
+            style="width: 40px"
+          />Time - {{ nowHours }}:{{ nowMinutes }}:{{ nowSeconds }}</span
+        >
       </div>
     </div>
   </div>
@@ -56,7 +96,7 @@ watch(
   border-radius: 8px;
   text-align: center;
   transform: translateY(-50%);
-  width: 30%;
+  width: 40%;
 }
 .country-head {
   display: flex;
@@ -108,5 +148,14 @@ watch(
 .link-card a {
   margin-left: 10px;
   text-align: start;
+}
+
+.info-about-place {
+  margin-top: 20px;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 }
 </style>
