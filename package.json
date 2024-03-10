@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vue-tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -19,6 +19,8 @@
     "@vitejs/plugin-vue": "^4.5.2",
     "@vue-leaflet/vue-leaflet": "^0.10.1",
     "leaflet": "^1.9.4",
-    "vite": "^5.0.8"
+    "typescript": "^5.4.2",
+    "vite": "^5.0.8",
+    "vue-tsc": "^2.0.6"
   }
 }

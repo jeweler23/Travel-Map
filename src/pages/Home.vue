@@ -15,6 +15,7 @@
       :capitalMarker="capitalCoords"
       :infoCountries="infoCountries"
       :index="indexCountry"
+      :isInput="isInput"
     />
   </div>
 </template>
@@ -28,7 +29,6 @@ import Search from "@/components/AppSearch.vue";
 import { useCountriesStore } from "../store/CountriesStore";
 import { infoCountries } from "@/assets/consts/index.js";
 import { onMounted, reactive, ref } from "vue";
-import { latLng } from "leaflet";
 
 const countriesStore = useCountriesStore();
 
@@ -40,10 +40,11 @@ const infoPlace = reactive({
   timezone: 10800,
 });
 const capitalCoords = ref([55.7558, 37.6176]);
+const isInput = ref(false);
 
 async function showCountry(city) {
   const [info] = await countriesStore.searchCountryByCity(city);
-  getIdCountries1(info);
+  getSearchCountry(info);
   console.log(info.lat, info.lon);
 }
 
@@ -51,7 +52,9 @@ function getCoordsCapital(countries, index) {
   return countries[index].capitalInfo.latlng;
 }
 
-async function getIdCountries1(coord) {
+async function getSearchCountry(coord) {
+  isInput.value = true;
+
   capitalCoords.value = [coord.lat, coord.lon];
 
   //получаем инормацию о месте
@@ -66,18 +69,10 @@ async function getIdCountries1(coord) {
 
   //получаем инорфмацию о области выбранного места
   infoPlace.region = countriesStore.country._value[0].state;
-  const country = countriesStore.country;
-
-  //получаем индекс страны
-  indexCountry.value = countriesStore.getIdCountry(
-    country._value,
-    infoCountries
-  );
-
-  capitalCoords.value = getCoordsCapital(infoCountries, indexCountry.value);
 }
 
 async function getIdCountries(coord) {
+  isInput.value = false;
   //получаем инормацию о месте
   await countriesStore.getInfoCountry(coord.lat, coord.lng);
 

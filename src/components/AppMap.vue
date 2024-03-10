@@ -15,6 +15,7 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  isInput: Boolean,
 });
 
 const emit = defineEmits(["getCoordsCountries", "getDayliForecast"]);
@@ -62,8 +63,9 @@ onUpdated(() => {
         props.infoCountries[props.index].name.common
       }`
     );
-  map.setView([props.capitalMarker[0], props.capitalMarker[1]], 7);
-
+  if (props.isInput) {
+    map.setView([props.capitalMarker[0], props.capitalMarker[1]], 7);
+  }
 });
 </script>
 
