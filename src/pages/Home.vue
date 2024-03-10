@@ -20,7 +20,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import Head from "@/components/AppHead.vue";
 import Map from "@/components/AppMap.vue";
 import Country from "@/components/AppCountry.vue";

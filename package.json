@@ -16,6 +16,8 @@
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
+    "@babel/types": "^7.24.0",
+    "@types/node": "^20.11.25",
     "@vitejs/plugin-vue": "^4.5.2",
     "@vue-leaflet/vue-leaflet": "^0.10.1",
     "leaflet": "^1.9.4",
