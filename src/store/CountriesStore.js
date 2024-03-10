@@ -47,12 +47,24 @@ export const useCountriesStore =
           `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&exclude={daily}&appid=${API_KEY}`
         );
         const data = await response.json();
-        
+
         return [Math.round(Number(data.main.temp) - 273), data.timezone];
       } catch (e) {
         console.log(e);
       }
     };
 
-    return { country, getInfoCountry, getIdCountry, getDayliForecast };
+    const searchCountryByCity = async (city) => {
+      try {
+        const response = await fetch(
+          `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${API_KEY}`
+        );
+        const data = await response.json();
+        return data
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    return { country, getInfoCountry, getIdCountry, getDayliForecast,searchCountryByCity };
   });

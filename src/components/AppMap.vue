@@ -1,5 +1,5 @@
 <script setup>
-import { onUpdated, onMounted, ref } from "vue";
+import { onUpdated, onMounted, ref, onBeforeUpdate } from "vue";
 import L from "leaflet";
 
 const props = defineProps({
@@ -17,18 +17,17 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits([
-  "getCoordsCountries",
-  "showInfo",
-  "getDayliForecast",
-]);
+const emit = defineEmits(["getCoordsCountries", "getDayliForecast"]);
 
 const mapContainer = ref(null);
 let map, marker;
 
 function mapLayout() {
   // Создаем карту
-  map = L.map(mapContainer.value).setView([55.7558, 37.6176], 7);
+  map = L.map(mapContainer.value).setView(
+    Object.values(props.capitalMarker),
+    7
+  );
 
   // Добавляем плитку OpenStreetMap
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -48,6 +47,10 @@ function getCoordsCountries(e) {
 
 onMounted(mapLayout);
 
+// onBeforeUpdate(() => {
+//   L.map(mapContainer.value).setView(Object.values(props.capitalMarker), 7);
+// });
+
 onUpdated(() => {
   if (marker) {
     map.removeLayer(marker);
@@ -59,6 +62,8 @@ onUpdated(() => {
         props.infoCountries[props.index].name.common
       }`
     );
+  map.setView([props.capitalMarker[0], props.capitalMarker[1]], 7);
+
 });
 </script>
 
