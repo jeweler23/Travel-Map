@@ -1,34 +1,3 @@
-<script setup>
-import { computed, onBeforeUpdate, ref, watch } from "vue";
-// import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-// import { faHouse } from "@awesome.me/kit-KIT_CODE/icons/classic/solid";
-const props = defineProps({
-  infoCountries: {
-    type: [Object, null],
-    required: true,
-  },
-  index: {
-    type: Number,
-    required: true,
-  },
-  region: String,
-  namePlace: String,
-  tempInPlace: Number,
-  timezonePlace: Number,
-});
-
-const nowDate = ref(new Date());
-const nowHours = ref(null);
-const nowSeconds = ref(null);
-const nowMinutes = ref(null);
-
-setInterval(() => {
-  nowHours.value = props.timezonePlace / 3600 + nowDate.value.getUTCHours();
-  nowMinutes.value = nowDate.value.getMinutes();
-  nowSeconds.value = nowDate.value.getSeconds();
-  nowDate.value = new Date();
-}, 1000);
-</script>
 <template>
   <div class="card container" @click="$emit('showInfo', showInfoCountry)">
     <div class="country-card">
@@ -51,28 +20,28 @@ setInterval(() => {
           Capital - {{ infoCountries[index].capital[0] }}
         </h2>
 
-        <h3 v-if="region" style="margin-top: 20px" class="info-about-place">
+        <h3 v-if="infoPlace" style="margin-top: 20px" class="info-about-place">
           <img
             src="../assets/image/empire-state-building.png"
             alt=""
             style="width: 40px"
-          />State - {{ region }}
+          />State - {{ infoPlace.region }}
         </h3>
-        <p v-if="namePlace" style="" class="info-about-place">
+        <p v-if="infoPlace" style="" class="info-about-place">
           <img
             src="../assets/image/location (1).png"
             alt=""
             style="width: 40px"
           />
-          Place - {{ namePlace }}
+          Place - {{ infoPlace.name }}
         </p>
-        <p v-if="namePlace" style="" class="info-about-place">
+        <p v-if="infoPlace" style="" class="info-about-place">
           <img
             src="../assets/image/weather-forecast.png"
             alt=""
             style="width: 40px"
           />
-          Temperature - {{ tempInPlace }} &deg;C
+          Temperature - {{ infoPlace.temperature }} &deg;C
         </p>
         <span class="info-about-place">
           <img
@@ -85,6 +54,40 @@ setInterval(() => {
     </div>
   </div>
 </template>
+
+<script setup>
+import { ref } from "vue";
+
+const props = defineProps({
+  infoCountries: {
+    type: [Object, null],
+    required: true,
+  },
+  index: {
+    type: Number,
+    required: true,
+  },
+  infoPlace: {
+    type: Object,
+    required: true,
+  },
+});
+
+const nowDate = ref(new Date());
+const nowHours = ref(null);
+const nowSeconds = ref(null);
+const nowMinutes = ref(null);
+
+setInterval(() => {
+  nowHours.value =
+    props.infoPlace.timezone / 3600 + nowDate.value.getUTCHours();
+  nowMinutes.value = nowDate.value.getMinutes();
+  nowSeconds.value = nowDate.value.getSeconds();
+  nowDate.value = new Date();
+}, 1000);
+
+</script>
+
 <style scoped>
 .card {
   position: absolute;

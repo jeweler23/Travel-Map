@@ -21,7 +21,7 @@ export const useCountriesStore =
     };
 
     // получаем инфомарцию о стране
-    const resultIdCountry = (country, infoCountry) => {
+    const getIdCountry = (country, infoCountry) => {
       let i = 0;
       if (
         !JSON.parse(JSON.stringify(country)) ||
@@ -47,12 +47,12 @@ export const useCountriesStore =
           `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&exclude={daily}&appid=${API_KEY}`
         );
         const data = await response.json();
-        console.log(Math.round(Number(data.main.temp) - 273), data.timezone);
+        
         return [Math.round(Number(data.main.temp) - 273), data.timezone];
       } catch (e) {
         console.log(e);
       }
     };
 
-    return { country, getInfoCountry, resultIdCountry, getDayliForecast };
+    return { country, getInfoCountry, getIdCountry, getDayliForecast };
   });

@@ -1,17 +1,13 @@
 <template>
   <div>
-    <Logo />
-    <Title />
+    <Head :title="'Travel Map'" :title-class="true"/>
+    <Head :title="'Unforgettable trips To the most amazing Places in the world'" />
     <Country
       :infoCountries="infoCountries"
       :index="indexCountry"
-      :region="region"
-      :namePlace="namePlace"
-      :tempInPlace="tempInPlace"
-      :timezonePlace="timezonePlace"
+      :infoPlace="infoPlace"
     />
     <Map
-      @showInfo="showInfo"
       @getCoordsCountries="getIdCountries"
       :capitalMarker="capitalCoords"
       :infoCountries="infoCountries"
@@ -21,28 +17,26 @@
 </template>
 
 <script setup>
-import Logo from "@/components/Logo.vue";
-import Map from "@/components/Map.vue";
-import Title from "@/components/Title.vue";
-import Country from "@/components/Country.vue";
+import Head from "@/components/AppHead.vue";
+import Map from "@/components/AppMap.vue";
+import Country from "@/components/AppCountry.vue";
 import { useCountriesStore } from "../store/CountriesStore";
 import { infoCountries } from "@/assets/consts/index.js";
-import { onBeforeUpdate, onMounted, ref, watch } from "vue";
+import { onMounted, reactive, ref } from "vue";
 
 const countriesStore = useCountriesStore();
 
-const show = ref(false);
 const indexCountry = ref(203);
-const region = ref("Moscow");
-const namePlace = ref("Moscow");
+const infoPlace = reactive({
+  region:'Moscow',
+  name:'Moscow',
+  temperature: null,
+  timezone: 10800,
+})
 const capitalCoords = ref([55.7558, 37.6176]);
-const tempInPlace = ref(null);
-const timezonePlace = ref(10800);
 
 
-const showInfo = (accept) => {
-  show.value = accept.value;
-};
+
 
 function getCoordsCapital(countries, index) {
   return countries[index].capitalInfo.latlng;
@@ -51,16 +45,20 @@ function getCoordsCapital(countries, index) {
 async function getIdCountries(coord) {
   //получаем инормацию о месте
   await countriesStore.getInfoCountry(coord.lat, coord.lng);
+  
   //получаем информацию о погоде и временной зоне
-  [tempInPlace.value, timezonePlace.value] =
+  [infoPlace.temperature, infoPlace.timezone] =
     await countriesStore.getDayliForecast(coord.lat, coord.lng);
+
   //получаем информацию о имени места
-  namePlace.value = countriesStore.country._value[0].name;
+  infoPlace.name = countriesStore.country._value[0].name;
+
   //получаем инорфмацию о области выбранного места
-  region.value = countriesStore.country._value[0].state;
+  infoPlace.region = countriesStore.country._value[0].state;
   const country = countriesStore.country;
+
   //получаем индекс страны
-  indexCountry.value = countriesStore.resultIdCountry(
+  indexCountry.value = countriesStore.getIdCountry(
     country._value,
     infoCountries
   );
@@ -71,11 +69,13 @@ async function getIdCountries(coord) {
 
 
 onMounted(async () => {
-  [tempInPlace.value, timezonePlace.value] =
+  [infoPlace.temperature, infoPlace.timezone] =
     await countriesStore.getDayliForecast(
       capitalCoords.value[0],
       capitalCoords.value[1]
     );
+
+    
 });
 </script>
 

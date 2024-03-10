@@ -1,5 +1,5 @@
 <script setup>
-import { onUpdated, onBeforeUpdate, onMounted, ref } from "vue";
+import { onUpdated, onMounted, ref } from "vue";
 import L from "leaflet";
 
 const props = defineProps({
@@ -24,7 +24,6 @@ const emit = defineEmits([
 ]);
 
 const mapContainer = ref(null);
-const show = ref(false);
 let map, marker;
 
 function mapLayout() {
@@ -40,18 +39,11 @@ function mapLayout() {
   marker = L.marker(JSON.parse(JSON.stringify(props.capitalMarker)))
     .addTo(map)
     .bindPopup("Moscow, Russia");
-  map.on("click", showToggle);
-  map.on("click", latlngC);
+  map.on("click", getCoordsCountries);
 }
 
-function showToggle() {
-  show.value = !show.value;
-  emit("showInfo", show);
-}
-
-function latlngC(e) {
+function getCoordsCountries(e) {
   emit("getCoordsCountries", e.latlng);
-  // emit('getDayliForecast',e.latlng)
 }
 
 onMounted(mapLayout);
