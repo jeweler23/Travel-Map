@@ -1,5 +1,5 @@
 <script setup>
-import { onUpdated, onBeforeUpdate, onMounted, ref } from "vue";
+import { onUpdated, onMounted, ref, onBeforeUpdate } from "vue";
 import L from "leaflet";
 
 const props = defineProps({
@@ -7,7 +7,7 @@ const props = defineProps({
     type: [Array, null],
     required: true,
   },
-  country: {
+  infoCountries: {
     type: [Object, null],
     required: true,
   },
@@ -15,18 +15,20 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  isInput: Boolean,
 });
 
-
-const emit = defineEmits(["getCoordsCountries", "showInfo"]);
+const emit = defineEmits(["getCoordsCountries", "getDayliForecast"]);
 
 const mapContainer = ref(null);
-const show = ref(false);
 let map, marker;
 
 function mapLayout() {
   // Создаем карту
-  map = L.map(mapContainer.value).setView([55.7558, 37.6176], 7);
+  map = L.map(mapContainer.value).setView(
+    Object.values(props.capitalMarker),
+    7
+  );
 
   // Добавляем плитку OpenStreetMap
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -37,22 +39,14 @@ function mapLayout() {
   marker = L.marker(JSON.parse(JSON.stringify(props.capitalMarker)))
     .addTo(map)
     .bindPopup("Moscow, Russia");
-  map.on("click", showToggle);
-  map.on("click", latlngC);
+  map.on("click", getCoordsCountries);
 }
 
-function showToggle() {
-  show.value = !show.value;
-  emit("showInfo", show);
-}
-
-function latlngC(e) {
+function getCoordsCountries(e) {
   emit("getCoordsCountries", e.latlng);
 }
 
 onMounted(mapLayout);
-
-onBeforeUpdate(() => {});
 
 onUpdated(() => {
   if (marker) {
@@ -60,7 +54,14 @@ onUpdated(() => {
   }
   marker = L.marker(JSON.parse(JSON.stringify(props.capitalMarker)))
     .addTo(map)
-    .bindPopup(`${props.country[props.index].capital[0]}, ${props.country[props.index].name.common}`);
+    .bindPopup(
+      `${props.infoCountries[props.index].capital[0]}, ${
+        props.infoCountries[props.index].name.common
+      }`
+    );
+  if (props.isInput) {
+    map.setView([props.capitalMarker[0], props.capitalMarker[1]], 7);
+  }
 });
 </script>
 

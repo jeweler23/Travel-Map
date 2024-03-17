@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { API_KEY } from "@/assets/consts/consts";
-// import { infoCountries } from "../assets/consts";
 
 export const useCountriesStore =
   ("countiesStore",
@@ -10,14 +9,18 @@ export const useCountriesStore =
 
     // получаем страну по координатам
     const getInfoCountry = async (lat, lng) => {
-      const response = await fetch(
-        `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&limit=${3}&appid=${API_KEY}`
-      );
-      country.value = await response.json();
+      try {
+        const response = await fetch(
+          `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&limit=${3}&appid=${API_KEY}`
+        );
+        country.value = await response.json();
+      } catch (e) {
+        console.log(e);
+      }
     };
 
     // получаем инфомарцию о стране
-    const resultIdCountry = (country, infoCountry) => {
+    const getIdCountry = (country, infoCountry) => {
       let i = 0;
       if (
         !JSON.parse(JSON.stringify(country)) ||
@@ -37,5 +40,31 @@ export const useCountriesStore =
       return i;
     };
 
-    return { country, getInfoCountry, resultIdCountry };
+    const getDayliForecast = async (lat, lng) => {
+      try {
+        const response = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&exclude={daily}&appid=${API_KEY}`
+        );
+        const data = await response.json();
+
+        return [Math.round(Number(data.main.temp) - 273), data.timezone];
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    const searchCountryByCity = async (city) => {
+      try {
+        const response = await fetch(
+          `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${API_KEY}`
+        );
+        const data = await response.json();
+        console.log(data);
+        return data
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    return { country, getInfoCountry, getIdCountry, getDayliForecast,searchCountryByCity };
   });
