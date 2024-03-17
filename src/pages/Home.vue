@@ -4,7 +4,7 @@
     <Head
       :title="'Unforgettable trips To the most amazing Places in the world'"
     />
-    <Search @show-country="showCountry" />
+    <Search @searchCountry="searchCountry" />
     <Country
       :infoCountries="infoCountries"
       :index="indexCountry"
@@ -42,10 +42,9 @@ const infoPlace = reactive({
 const capitalCoords = ref([55.7558, 37.6176]);
 const isInput = ref(false);
 
-async function showCountry(city) {
+async function searchCountry(city) {
   const [info] = await countriesStore.searchCountryByCity(city);
-  getSearchCountry(info);
-  console.log(info.lat, info.lon);
+  await getSearchCountry(info);
 }
 
 function getCoordsCapital(countries, index) {
@@ -56,7 +55,8 @@ async function getSearchCountry(coord) {
   isInput.value = true;
 
   capitalCoords.value = [coord.lat, coord.lon];
-
+  console.log(capitalCoords.value);
+  
   //получаем инормацию о месте
   await countriesStore.getInfoCountry(coord.lat, coord.lon);
 
@@ -69,6 +69,14 @@ async function getSearchCountry(coord) {
 
   //получаем инорфмацию о области выбранного места
   infoPlace.region = countriesStore.country._value[0].state;
+
+  const country = countriesStore.country;
+
+  indexCountry.value = countriesStore.getIdCountry(
+    country._value,
+    infoCountries
+  );
+  
 }
 
 async function getIdCountries(coord) {

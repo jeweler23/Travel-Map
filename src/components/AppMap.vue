@@ -48,10 +48,6 @@ function getCoordsCountries(e) {
 
 onMounted(mapLayout);
 
-// onBeforeUpdate(() => {
-//   L.map(mapContainer.value).setView(Object.values(props.capitalMarker), 7);
-// });
-
 onUpdated(() => {
   if (marker) {
     map.removeLayer(marker);

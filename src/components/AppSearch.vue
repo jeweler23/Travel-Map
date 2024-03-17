@@ -1,7 +1,7 @@
 <script setup>
-const emit = defineEmits(["showCountry"]);
-function showCountry(e) {
-  emit("showCountry", e.target.value);
+const emit = defineEmits(["searchCountry"]);
+function searchCountry(e) {
+  emit("searchCountry", e.target.value);
 }
 </script>
 
@@ -11,7 +11,7 @@ function showCountry(e) {
 
     <input
       type="text"
-      @keyup.enter="showCountry"
+      @keyup.enter="searchCountry"
       placeholder="Enter the name of the city"
     />
   </div>

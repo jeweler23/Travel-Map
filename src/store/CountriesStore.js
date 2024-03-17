@@ -59,6 +59,7 @@ export const useCountriesStore =
           `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${API_KEY}`
         );
         const data = await response.json();
+        console.log(data);
         return data
       } catch (e) {
         console.log(e);
