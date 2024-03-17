@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { API_KEY } from "@/assets/consts/consts";
+import { API_KEY } from "../assets/consts/consts.ts";
 
 export const useCountriesStore =
   ("countiesStore",
