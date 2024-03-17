@@ -1,6 +1,10 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { API_KEY } from "../assets/consts/consts.ts";
+import { API_KEY } from "../assets/consts/consts.js";
+
+type Country<T> = {
+  [key: string]: T;
+};
 
 export const useCountriesStore =
   ("countiesStore",
@@ -20,7 +24,10 @@ export const useCountriesStore =
     };
 
     // получаем инфомарцию о стране
-    const getIdCountry = (country, infoCountry) => {
+    const getIdCountry = (
+      country: Object,
+      infoCountry: Array<Country<number | string | Object | boolean | string[]>>
+    ): number => {
       let i = 0;
       if (
         !JSON.parse(JSON.stringify(country)) ||
@@ -28,15 +35,22 @@ export const useCountriesStore =
       ) {
         return 203;
       }
-      infoCountry.forEach((element, index) => {
-        if (
-          element.altSpellings[0] !==
-          JSON.parse(JSON.stringify(country))[0].country
-        ) {
-          return;
+      infoCountry.forEach(
+        (
+          element: Country<number | string | Object | boolean | string[]>,
+          index
+        ) => {
+          console.log(element);
+
+          if (
+            element.altSpellings[0] !==
+            JSON.parse(JSON.stringify(country))[0].country
+          ) {
+            return;
+          }
+          i = index;
         }
-        i = index;
-      });
+      );
       return i;
     };
 
@@ -60,11 +74,17 @@ export const useCountriesStore =
         );
         const data = await response.json();
         console.log(data);
-        return data
+        return data;
       } catch (e) {
         console.log(e);
       }
     };
 
-    return { country, getInfoCountry, getIdCountry, getDayliForecast,searchCountryByCity };
+    return {
+      country,
+      getInfoCountry,
+      getIdCountry,
+      getDayliForecast,
+      searchCountryByCity,
+    };
   });

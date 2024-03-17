@@ -20,14 +20,14 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script  setup>
 import Head from "@/components/AppHead.vue";
 import Map from "@/components/AppMap.vue";
 import Country from "@/components/AppCountry.vue";
 import Search from "@/components/AppSearch.vue";
 
 import { useCountriesStore } from "../store/CountriesStore";
-import { infoCountries } from "@/assets/consts/index.js";
+import { infoCountries } from "../assets/consts/index.ts";
 import { onMounted, reactive, ref } from "vue";
 
 const countriesStore = useCountriesStore();
