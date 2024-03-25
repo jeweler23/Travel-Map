@@ -40,7 +40,7 @@ export const useCountriesStore =
           element: Country<number | string | Object | boolean | string[]>,
           index
         ) => {
-          console.log(element);
+          // console.log(element);
 
           if (
             element.altSpellings[0] !==
