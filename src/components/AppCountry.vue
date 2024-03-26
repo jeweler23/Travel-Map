@@ -56,7 +56,7 @@
                 src="../assets/image/clock (1).png"
                 alt=""
                 style="width: 40px"
-              />Time - {{ nowHours }}:{{ nowMinutes }}:{{ nowSeconds }}</span
+              />Time - {{ nowHours }}:{{ nowMinutes }}</span
             >
           </div>
         </div>
@@ -85,16 +85,14 @@ const props = defineProps({
 
 const nowDate = ref(new Date());
 const nowHours = ref(null);
-const nowSeconds = ref(null);
 const nowMinutes = ref(null);
 
 setInterval(() => {
   nowHours.value =
     props.infoPlace.timezone / 3600 + nowDate.value.getUTCHours();
   nowMinutes.value = nowDate.value.getMinutes();
-  nowSeconds.value = nowDate.value.getSeconds();
   nowDate.value = new Date();
-}, 1000);
+}, 3600);
 </script>
 
 <style scoped>

@@ -1,5 +1,5 @@
 <script setup>
-import { onUpdated, onMounted, ref, onBeforeUpdate } from "vue";
+import { onUpdated, onMounted, ref } from "vue";
 import L from "leaflet";
 
 const props = defineProps({
@@ -39,10 +39,10 @@ function mapLayout() {
   marker = L.marker(JSON.parse(JSON.stringify(props.capitalMarker)))
     .addTo(map)
     .bindPopup("Moscow, Russia");
-  map.on("click", getCoordsCountries);
+  map.on("click", getCoords);
 }
 
-function getCoordsCountries(e) {
+function getCoords(e) {
   emit("getCoordsCountries", e.latlng);
 }
 
