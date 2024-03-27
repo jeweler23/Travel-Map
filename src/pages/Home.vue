@@ -3,6 +3,7 @@
     <Head :title="'Travel Map'" :title-class="true" />
     <Head
       :title="'Unforgettable trips To the most amazing Places in the world'"
+      :title-class="false"
     />
     <Search @searchCountry="searchCountry" />
     <Country

@@ -1,66 +1,67 @@
-<script setup>
+<script setup lang="ts">
 import { onUpdated, onMounted, ref } from "vue";
 import L from "leaflet";
+// import type { map, latLng, tileLayer, MapOptions } from "leaflet";
 
-const props = defineProps({
-  capitalMarker: {
-    type: [Array, null],
-    required: true,
-  },
-  infoCountries: {
-    type: [Object, null],
-    required: true,
-  },
-  index: {
-    type: Number,
-    required: true,
-  },
-  isInput: Boolean,
-});
+type InfoCountry = {
+  [key: string]: number | string | object | boolean | string[];
+};
 
-const emit = defineEmits(["getCoordsCountries", "getDayliForecast"]);
+interface AboutCountry {
+  capitalMarker: [number, number];
+  infoCountries: InfoCountry[];
+  index: number;
+  isInput: Boolean;
+}
 
-const mapContainer = ref(null);
-let map, marker;
+const props = defineProps<AboutCountry>();
+
+const emit = defineEmits<{
+  (e: "getCoordsCountries", value: Object): void;
+}>();
+
+const mapContainer = ref<any>(null);
+let card: L.Map;
+let marker: L.Marker;
 
 function mapLayout() {
   // Создаем карту
-  map = L.map(mapContainer.value).setView(
-    Object.values(props.capitalMarker),
+  card = L.map(mapContainer.value).setView(
+    [props.capitalMarker[0], props.capitalMarker[1]],
     7
   );
 
   // Добавляем плитку OpenStreetMap
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap contributors",
-  }).addTo(map);
+  }).addTo(card);
 
   // Добавляем маркер
   marker = L.marker(JSON.parse(JSON.stringify(props.capitalMarker)))
-    .addTo(map)
+    .addTo(card)
     .bindPopup("Moscow, Russia");
-  map.on("click", getCoords);
+  card.on("click", getCoords);
 }
 
-function getCoords(e) {
-  emit("getCoordsCountries", e.latlng);
+function getCoords(event: L.LeafletMouseEvent) {
+  emit("getCoordsCountries", event.latlng);
 }
 
 onMounted(mapLayout);
 
 onUpdated(() => {
   if (marker) {
-    map.removeLayer(marker);
+    card.removeLayer(marker);
   }
   marker = L.marker(JSON.parse(JSON.stringify(props.capitalMarker)))
-    .addTo(map)
+    .addTo(card)
     .bindPopup(
       `${props.infoCountries[props.index].capital[0]}, ${
         props.infoCountries[props.index].name.common
       }`
     );
   if (props.isInput) {
-    map.setView([props.capitalMarker[0], props.capitalMarker[1]], 7);
+    card.setView([props.capitalMarker[0], props.capitalMarker[1]], 7);
   }
 });
 </script>
