@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { onUpdated, onMounted, ref } from "vue";
-import L from "leaflet";
-// import type { map, latLng, tileLayer, MapOptions } from "leaflet";
+import * as L from "leaflet";
 
 type InfoCountry = {
   [key: string]: number | string | object | boolean | string[];
+  capital: string[];
+  name: {
+    common: string;
+  };
 };
 
 interface AboutCountry {
@@ -16,6 +19,7 @@ interface AboutCountry {
 
 const props = defineProps<AboutCountry>();
 
+console.log(props.infoCountries);
 const emit = defineEmits<{
   (e: "getCoordsCountries", value: Object): void;
 }>();
