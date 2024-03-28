@@ -1,5 +1,7 @@
 <template>
   <div class="card container" @click="$emit('showInfo', showInfoCountry)">
+    <slot></slot>
+
     <div class="country-card">
       <Transition name="country" mode="out-in">
         <div :key="props.index">

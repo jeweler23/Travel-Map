@@ -6,12 +6,23 @@
       :title-class="false"
     />
     <Search @searchCountry="searchCountry" />
-    <Country
+    <AsyncComp
       :infoCountries="infoCountries"
       :index="indexCountry"
       :infoPlace="infoPlace"
-    />
+      v-if="show"
+    >
+      <v-btn
+        variant="tonal"
+        class="btn-close"
+        style="float: right"
+        @click="show = false"
+      >
+        X
+      </v-btn>
+    </AsyncComp>
     <Map
+      @click="show = true"
       @getCoordsCountries="getIdCountries"
       :capitalMarker="capitalCoords"
       :infoCountries="infoCountries"
@@ -24,12 +35,24 @@
 <script setup>
 import Head from "@/components/AppHead.vue";
 import Map from "@/components/AppMap.vue";
-import Country from "@/components/AppCountry.vue";
+// import Country from "@/components/AppCountry.vue";
 import Search from "@/components/AppSearch.vue";
 
 import { useCountriesStore } from "../store/CountriesStore";
 import { infoCountries } from "../assets/consts/index.ts";
-import { onMounted, reactive, ref } from "vue";
+import {
+  onMounted,
+  reactive,
+  ref,
+  defineAsyncComponent,
+  shallowRef,
+} from "vue";
+
+const show = shallowRef(false);
+
+const AsyncComp = defineAsyncComponent(() =>
+  import("@/components/AppCountry.vue")
+);
 
 const countriesStore = useCountriesStore();
 
@@ -108,4 +131,9 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.btn-close {
+  padding: 5px;
+  margin: 10px;
+}
+</style>
