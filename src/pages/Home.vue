@@ -32,7 +32,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Head from "@/components/AppHead.vue";
 import Map from "@/components/AppMap.vue";
 // import Country from "@/components/AppCountry.vue";
@@ -50,8 +50,8 @@ import {
 
 const show = shallowRef(false);
 
-const AsyncComp = defineAsyncComponent(() =>
-  import("@/components/AppCountry.vue")
+const AsyncComp = defineAsyncComponent(
+  () => import("@/components/AppCountry.vue")
 );
 
 const countriesStore = useCountriesStore();
