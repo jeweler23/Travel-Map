@@ -38,8 +38,15 @@ import Map from "@/components/AppMap.vue";
 // import Country from "@/components/AppCountry.vue";
 import Search from "@/components/AppSearch.vue";
 
+import type {
+  latlngCountry,
+  cityInfo,
+  infoPlace,
+  InfoCountry,
+} from "../types/type.ts";
+
 import { useCountriesStore } from "../store/CountriesStore";
-import { infoCountries } from "../assets/consts/index.ts";
+import { infoCountries } from "../assets/consts/index";
 import {
   onMounted,
   reactive,
@@ -57,69 +64,84 @@ const AsyncComp = defineAsyncComponent(
 const countriesStore = useCountriesStore();
 
 const indexCountry = ref(203);
-const infoPlace = reactive({
+const infoPlace = reactive<infoPlace>({
   region: "Moscow",
   name: "Moscow",
-  temperature: null,
+  temperature: 0,
   timezone: 10800,
 });
-const capitalCoords = ref([55.7558, 37.6176]);
+const capitalCoords = ref<[number, number]>([55.7558, 37.6176]);
 const isInput = ref(false);
 
-async function searchCountry(city) {
-  const [info] = await countriesStore.searchCountryByCity(city);
+async function searchCountry(city: string) {
+  const info = await countriesStore.searchCountryByCity(city);
+
   await getSearchCountry(info);
 }
 
-function getCoordsCapital(countries, index) {
-  return countries[index].capitalInfo.latlng;
+async function getSearchCountry(city: cityInfo | undefined) {
+  try {
+    console.log(city);
+
+    console.log(city?.country);
+
+    if (city) {
+      isInput.value = true;
+      capitalCoords.value = [city.lat, city.lon];
+
+      //получаем инормацию о месте
+      await countriesStore.getInfoCountry(city.lat, city.lon);
+
+      //получаем информацию о погоде и временной зоне
+      [infoPlace.temperature, infoPlace.timezone] =
+        await countriesStore.getDayliForecast(city.lat, city.lon);
+
+      //получаем информацию о имени места
+      infoPlace.name = (countriesStore.country as cityInfo[])[0].name;
+
+      //получаем инорфмацию о области выбранного места
+      infoPlace.region = (countriesStore.country as cityInfo[])[0].state;
+
+      const country = countriesStore.country;
+
+      indexCountry.value = country
+        ? countriesStore.getIdCountry(country, infoCountries)
+        : 203;
+    }
+  } catch (e) {
+    console.log(e);
+  }
 }
 
-async function getSearchCountry(coord) {
-  isInput.value = true;
+const  fillInfoPlace = async ()=>{
 
-  capitalCoords.value = [coord.lat, coord.lon];
-  console.log(capitalCoords.value);
-
-  //получаем инормацию о месте
-  await countriesStore.getInfoCountry(coord.lat, coord.lon);
-
-  //получаем информацию о погоде и временной зоне
-  [infoPlace.temperature, infoPlace.timezone] =
-    await countriesStore.getDayliForecast(coord.lat, coord.lon);
-
-  //получаем информацию о имени места
-  infoPlace.name = countriesStore.country._value[0].name;
-
-  //получаем инорфмацию о области выбранного места
-  infoPlace.region = countriesStore.country._value[0].state;
-
-  const country = countriesStore.country;
-
-  indexCountry.value = countriesStore.getIdCountry(
-    country._value,
-    infoCountries
-  );
 }
 
-async function getIdCountries(coord) {
+async function getIdCountries(coord: latlngCountry) {
   isInput.value = false;
   //получаем инормацию о месте
   await countriesStore.getInfoCountry(coord.lat, coord.lng);
 
+  const country = countriesStore.country;
   //получаем информацию о погоде и временной зоне
   [infoPlace.temperature, infoPlace.timezone] =
-    //получаем информацию о имени места
-    infoPlace.name = countriesStore.country[0].name;
+    await countriesStore.getDayliForecast(coord.lat, coord.lng);
+  //получаем информацию о имени места
+  infoPlace.name = (country as cityInfo[])[0].name;
 
   //получаем инорфмацию о области выбранного места
-  infoPlace.region = countriesStore.country[0].state;
-  const country = countriesStore.country;
+  infoPlace.region = (country as cityInfo[])[0].state;
 
   //получаем индекс страны
-  indexCountry.value = countriesStore.getIdCountry(country, infoCountries);
+  indexCountry.value = country
+    ? countriesStore.getIdCountry(country, infoCountries)
+    : 203;
 
   capitalCoords.value = getCoordsCapital(infoCountries, indexCountry.value);
+}
+
+function getCoordsCapital(countries: InfoCountry[], index: number) {
+  return countries[index].capitalInfo.latlng;
 }
 
 onMounted(async () => {

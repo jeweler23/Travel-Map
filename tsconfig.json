@@ -10,6 +10,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "lib": [
+      "es5", "es6", "dom", "dom.iterable"
+  ]
   }
 }

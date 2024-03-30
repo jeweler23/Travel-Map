@@ -2,12 +2,14 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { API_KEY } from "../assets/consts/consts.js";
 
+import type{cityInfo,InfoCountry,weatherPlace} from '../types/type'
+
 interface Country {
   [key: string]: number | string | Object | boolean | string[];
 }
 
 export const useCountriesStore = defineStore("countiesStore", () => {
-  const country = ref(null);
+  const country = ref<cityInfo[]>();
 
   // получаем страну по координатам
   const getInfoCountry = async (lat: Number, lng: Number) => {
@@ -15,7 +17,8 @@ export const useCountriesStore = defineStore("countiesStore", () => {
       const response = await fetch(
         `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&limit=${3}&appid=${API_KEY}`
       );
-      country.value = await response.json();
+      [country.value]= await response.json();
+      
     } catch (e) {
       console.log(e);
     }
@@ -23,8 +26,8 @@ export const useCountriesStore = defineStore("countiesStore", () => {
 
   // получаем инфомарцию о стране
   const getIdCountry = (
-    country: Object,
-    infoCountry: Array<Country>
+    country: cityInfo[],
+    infoCountry: Array<InfoCountry>
   ): number => {
     let i = 0;
     if (
@@ -33,7 +36,7 @@ export const useCountriesStore = defineStore("countiesStore", () => {
     ) {
       return 203;
     }
-    infoCountry.forEach((element: Country, index) => {
+    infoCountry.forEach((element: InfoCountry, index) => {
       if (
         Array.isArray(element.altSpellings) &&
         element.altSpellings[0] !==
@@ -49,15 +52,15 @@ export const useCountriesStore = defineStore("countiesStore", () => {
   const getDayliForecast = async (
     lat: number,
     lng: number
-  ): Promise<(number | Object)[] | undefined> => {
+  ): Promise<(number | number)[] | undefined> => {
     try {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&exclude={daily}&appid=${API_KEY}`
       );
-      const data: Country = await response.json();
-
+      const data: weatherPlace = await response.json();
+        
       return [
-        Math.round(Number((data.main as Country).temp) - 273),
+        Math.round(Number(data.main.temp) - 273),
         data.timezone,
       ];
     } catch (e) {
@@ -67,13 +70,13 @@ export const useCountriesStore = defineStore("countiesStore", () => {
 
   const searchCountryByCity = async (
     city: string
-  ): Promise<object | undefined> => {
+  ):Promise<cityInfo|undefined> => {
     try {
       const response = await fetch(
         `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${API_KEY}`
       );
-      const data: object = await response.json();
-
+      const [data] = await response.json();
+     
       return data;
     } catch (e) {
       console.log(e);

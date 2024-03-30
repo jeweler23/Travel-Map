@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const emit = defineEmits<{
-  (e: "searchCountry", value: String): void;
+  (e: "searchCountry", value: string): Promise<void>;
 }>();
 function searchCountry(e: Event) {
   emit("searchCountry", (e.target as HTMLInputElement).value);

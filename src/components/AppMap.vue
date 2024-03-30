@@ -2,13 +2,8 @@
 import { onUpdated, onMounted, ref } from "vue";
 import * as L from "leaflet";
 
-type InfoCountry = {
-  [key: string]: number | string | object | boolean | string[];
-  capital: string[];
-  name: {
-    common: string;
-  };
-};
+import type { InfoCountry,latlngCountry } from "../types/type";
+
 
 interface AboutCountry {
   capitalMarker: [number, number];
@@ -18,10 +13,11 @@ interface AboutCountry {
 }
 
 const props = defineProps<AboutCountry>();
-
 console.log(props.infoCountries);
+
+
 const emit = defineEmits<{
-  (e: "getCoordsCountries", value: Object): void;
+  (e: "getCoordsCountries", value: latlngCountry): Promise<void>;
 }>();
 
 const mapContainer = ref<any>(null);
@@ -81,3 +77,4 @@ onUpdated(() => {
   height: 100vh;
 }
 </style>
+@/types/type
