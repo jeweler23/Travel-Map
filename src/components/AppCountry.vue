@@ -1,56 +1,68 @@
 <template>
   <div class="card container" @click="$emit('showInfo', showInfoCountry)">
-    <div class="country-card">
-      <div class="country-head">
-        <div
-          class="flag"
-          :style="`background-image: url(${infoCountries[index].flags.png})`"
-        ></div>
-        <h2 class="country-name" style="margin-left: 20px; font-size: 32px">
-          {{ infoCountries[index].name.common }}
-        </h2>
-      </div>
-      <div class="country-description">
-        <h2 class="info-about-place">
-          <img
-            src="../assets/image/architecture-and-city.png"
-            alt=""
-            style="width: 40px"
-          />
-          Capital - {{ infoCountries[index].capital[0] }}
-        </h2>
+    <slot></slot>
 
-        <h3 v-if="infoPlace" style="margin-top: 20px" class="info-about-place">
-          <img
-            src="../assets/image/empire-state-building.png"
-            alt=""
-            style="width: 40px"
-          />State - {{ infoPlace.region }}
-        </h3>
-        <p v-if="infoPlace" style="" class="info-about-place">
-          <img
-            src="../assets/image/location (1).png"
-            alt=""
-            style="width: 40px"
-          />
-          Place - {{ infoPlace.name }}
-        </p>
-        <p v-if="infoPlace" style="" class="info-about-place">
-          <img
-            src="../assets/image/weather-forecast.png"
-            alt=""
-            style="width: 40px"
-          />
-          Temperature - {{ infoPlace.temperature }} &deg;C
-        </p>
-        <span class="info-about-place">
-          <img
-            src="../assets/image/clock (1).png"
-            alt=""
-            style="width: 40px"
-          />Time - {{ nowHours }}:{{ nowMinutes }}:{{ nowSeconds }}</span
-        >
-      </div>
+    <div class="country-card">
+      <Transition name="country" mode="out-in">
+        <div :key="props.index">
+          <div class="country-head">
+            <div
+              class="flag"
+              :style="`background-image: url(${infoCountries[index].flags.png})`"
+            ></div>
+
+            <h2 class="country-name" style="margin-left: 20px; font-size: 32px">
+              {{ infoCountries[index].name.common }}
+            </h2>
+          </div>
+
+          <div class="country-description">
+            <h2 class="info-about-place">
+              <img
+                src="../assets/image/architecture-and-city.png"
+                alt=""
+                style="width: 40px"
+              />
+              Capital - {{ infoCountries[index].capital[0] }}
+            </h2>
+
+            <h3
+              v-if="infoPlace"
+              style="margin-top: 20px"
+              class="info-about-place"
+            >
+              <img
+                src="../assets/image/empire-state-building.png"
+                alt=""
+                style="width: 40px"
+              />State - {{ infoPlace.region }}
+            </h3>
+            <p v-if="infoPlace" style="" class="info-about-place">
+              <img
+                src="../assets/image/location (1).png"
+                alt=""
+                style="width: 40px"
+              />
+              Place - {{ infoPlace.name }}
+            </p>
+            <p v-if="infoPlace" style="" class="info-about-place">
+              <img
+                src="../assets/image/weather-forecast.png"
+                alt=""
+                style="width: 40px"
+              />
+              Temperature - {{ infoPlace.temperature }} &deg;C
+            </p>
+            <span class="info-about-place">
+              <img
+                src="../assets/image/clock (1).png"
+                alt=""
+                style="width: 40px"
+              />Time - {{ nowHours }}:{{ nowMinutes }}</span
+            >
+          </div>
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
@@ -75,19 +87,14 @@ const props = defineProps({
 
 const nowDate = ref(new Date());
 const nowHours = ref(null);
-const nowSeconds = ref(null);
 const nowMinutes = ref(null);
 
 setInterval(() => {
   nowHours.value =
     props.infoPlace.timezone / 3600 + nowDate.value.getUTCHours();
   nowMinutes.value = nowDate.value.getMinutes();
-  nowSeconds.value = nowDate.value.getSeconds();
   nowDate.value = new Date();
-}, 1000);
-
-
-
+}, 3600);
 </script>
 
 <style scoped>
@@ -162,5 +169,15 @@ setInterval(() => {
   align-items: center;
   justify-content: center;
   gap: 5px;
+}
+
+.country-enter-active,
+.country-leave-active {
+  transition: all 0.5s ease;
+}
+.country-enter-from,
+.country-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
 }
 </style>

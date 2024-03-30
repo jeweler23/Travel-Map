@@ -3,14 +3,26 @@
     <Head :title="'Travel Map'" :title-class="true" />
     <Head
       :title="'Unforgettable trips To the most amazing Places in the world'"
+      :title-class="false"
     />
     <Search @searchCountry="searchCountry" />
-    <Country
+    <AsyncComp
       :infoCountries="infoCountries"
       :index="indexCountry"
       :infoPlace="infoPlace"
-    />
+      v-if="show"
+    >
+      <v-btn
+        variant="tonal"
+        class="btn-close"
+        style="float: right"
+        @click="show = false"
+      >
+        X
+      </v-btn>
+    </AsyncComp>
     <Map
+      @click="show = true"
       @getCoordsCountries="getIdCountries"
       :capitalMarker="capitalCoords"
       :infoCountries="infoCountries"
@@ -20,15 +32,27 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import Head from "@/components/AppHead.vue";
 import Map from "@/components/AppMap.vue";
-import Country from "@/components/AppCountry.vue";
+// import Country from "@/components/AppCountry.vue";
 import Search from "@/components/AppSearch.vue";
 
 import { useCountriesStore } from "../store/CountriesStore";
-import { infoCountries } from "@/assets/consts/index.js";
-import { onMounted, reactive, ref } from "vue";
+import { infoCountries } from "../assets/consts/index.ts";
+import {
+  onMounted,
+  reactive,
+  ref,
+  defineAsyncComponent,
+  shallowRef,
+} from "vue";
+
+const show = shallowRef(false);
+
+const AsyncComp = defineAsyncComponent(
+  () => import("@/components/AppCountry.vue")
+);
 
 const countriesStore = useCountriesStore();
 
@@ -56,7 +80,7 @@ async function getSearchCountry(coord) {
 
   capitalCoords.value = [coord.lat, coord.lon];
   console.log(capitalCoords.value);
-  
+
   //получаем инормацию о месте
   await countriesStore.getInfoCountry(coord.lat, coord.lon);
 
@@ -76,7 +100,6 @@ async function getSearchCountry(coord) {
     country._value,
     infoCountries
   );
-  
 }
 
 async function getIdCountries(coord) {
@@ -86,20 +109,15 @@ async function getIdCountries(coord) {
 
   //получаем информацию о погоде и временной зоне
   [infoPlace.temperature, infoPlace.timezone] =
-    await countriesStore.getDayliForecast(coord.lat, coord.lng);
-
-  //получаем информацию о имени места
-  infoPlace.name = countriesStore.country._value[0].name;
+    //получаем информацию о имени места
+    infoPlace.name = countriesStore.country[0].name;
 
   //получаем инорфмацию о области выбранного места
-  infoPlace.region = countriesStore.country._value[0].state;
+  infoPlace.region = countriesStore.country[0].state;
   const country = countriesStore.country;
 
   //получаем индекс страны
-  indexCountry.value = countriesStore.getIdCountry(
-    country._value,
-    infoCountries
-  );
+  indexCountry.value = countriesStore.getIdCountry(country, infoCountries);
 
   capitalCoords.value = getCoordsCapital(infoCountries, indexCountry.value);
 }
@@ -113,4 +131,9 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.btn-close {
+  padding: 5px;
+  margin: 10px;
+}
+</style>

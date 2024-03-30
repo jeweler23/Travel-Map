@@ -1,12 +1,13 @@
-<script setup>
-const props = defineProps({
-  title: String,
-  titleClass:Boolean,
-});
+<script setup lang="ts">
+interface Title {
+  title: String;
+  titleClass: Boolean;
+}
+const props = defineProps<Title>();
 </script>
 <template>
-  <div :class="{'card_title':titleClass,'card_info':!titleClass}">
-    <div>{{ title }}</div>
+  <div :class="{ card_title: props.titleClass, card_info: !props.titleClass }">
+    <div>{{ props.title }}</div>
   </div>
 </template>
 <style scoped>

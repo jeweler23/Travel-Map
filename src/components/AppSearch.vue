@@ -1,7 +1,9 @@
-<script setup>
-const emit = defineEmits(["searchCountry"]);
-function searchCountry(e) {
-  emit("searchCountry", e.target.value);
+<script setup lang="ts">
+const emit = defineEmits<{
+  (e: "searchCountry", value: String): void;
+}>();
+function searchCountry(e: Event) {
+  emit("searchCountry", (e.target as HTMLInputElement).value);
 }
 </script>
 
