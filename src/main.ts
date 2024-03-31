@@ -18,6 +18,9 @@ const vuetify = createVuetify({
   icons: {
     defaultSet: "mdi",
   },
+  theme: {
+    defaultTheme: 'light'
+  }
 });
 
 const app = createApp(App);
@@ -27,4 +30,3 @@ app.use(pinia);
 app.use(router);
 app.use(vuetify);
 app.mount("#app");
-// .component("fa", FontAwesomeIcon)

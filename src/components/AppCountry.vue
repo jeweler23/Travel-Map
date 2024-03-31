@@ -1,7 +1,7 @@
 <template>
   <div class="card container" @click="$emit('showInfo', showInfoCountry)">
-    <v-card :theme="props.theme" class="country-card" elevation="16">
-      <slot></slot>
+    <v-card class="country-card" elevation="16">
+     
       <div >
         <Transition name="country" mode="out-in">
           <div :key="props.index">
@@ -79,9 +79,7 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  theme: {
-    type: Object,
-  },
+
 });
 
 const nowDate = ref(new Date());
