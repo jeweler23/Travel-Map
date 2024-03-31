@@ -74,4 +74,3 @@ onUpdated(() => {
   height: 100vh;
 }
 </style>
-@/types/type

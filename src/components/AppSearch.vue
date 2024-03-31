@@ -9,7 +9,7 @@ function searchCountry(e: Event) {
 
 <template>
   <div class="search">
-    <img src="@/assets/image/search-interface-symbol.png" alt="" />
+    <v-icon icon="mdi-magnify"/>
 
     <input
       type="text"

@@ -6,23 +6,16 @@
       :title-class="false"
     />
     <Search @searchCountry="searchCountry" />
-    <AsyncComp
+    <Country
       :infoCountries="infoCountries"
       :index="indexCountry"
       :infoPlace="infoPlace"
-      v-if="show"
+      :theme="theme.global.name.value"
     >
-      <v-btn
-        variant="tonal"
-        class="btn-close"
-        style="float: right"
-        @click="show = false"
-      >
-        X
+      <v-btn variant="tonal" class="btn-close" icon="mdi-theme-light-dark" @click="toggleTheme">
       </v-btn>
-    </AsyncComp>
+    </Country>
     <Map
-      @click="show = true"
       @getCoordsCountries="getIdCountries"
       :capitalMarker="capitalCoords"
       :infoCountries="infoCountries"
@@ -35,7 +28,7 @@
 <script setup lang="ts">
 import Head from "@/components/AppHead.vue";
 import Map from "@/components/AppMap.vue";
-// import Country from "@/components/AppCountry.vue";
+import Country from "@/components/AppCountry.vue";
 import Search from "@/components/AppSearch.vue";
 
 import type {
@@ -47,19 +40,17 @@ import type {
 
 import { useCountriesStore } from "../store/CountriesStore";
 import { infoCountries } from "../assets/consts/index";
-import {
-  onMounted,
-  reactive,
-  ref,
-  defineAsyncComponent,
-  shallowRef,
-} from "vue";
+import { onMounted, reactive, ref } from "vue";
 
-const show = shallowRef(false);
 
-const AsyncComp = defineAsyncComponent(
-  () => import("@/components/AppCountry.vue")
-);
+//toogle teme
+import { useTheme } from "vuetify";
+const theme = useTheme();
+
+function toggleTheme() {
+  theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
+}
+//
 
 const countriesStore = useCountriesStore();
 

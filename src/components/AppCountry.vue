@@ -1,73 +1,69 @@
 <template>
   <div class="card container" @click="$emit('showInfo', showInfoCountry)">
-    <slot></slot>
+    <v-card :theme="props.theme" class="country-card" elevation="16">
+      <slot></slot>
+      <div >
+        <Transition name="country" mode="out-in">
+          <div :key="props.index">
+            <div class="country-head">
+              <div
+                class="flag"
+                :style="`background-image: url(${infoCountries[index].flags.png})`"
+                style="border: 1px solid black;"
+              ></div>
 
-    <div class="country-card">
-      <Transition name="country" mode="out-in">
-        <div :key="props.index">
-          <div class="country-head">
-            <div
-              class="flag"
-              :style="`background-image: url(${infoCountries[index].flags.png})`"
-            ></div>
+              <h2
+                class="country-name"
+                style="margin-left: 20px; font-size: 32px"
+              >
+                {{ infoCountries[index].name.common }}
+              </h2>
+            </div>
 
-            <h2 class="country-name" style="margin-left: 20px; font-size: 32px">
-              {{ infoCountries[index].name.common }}
-            </h2>
+            <div class="country-description">
+              <h2 class="info-about-place">
+                <img
+                  src="../assets/image/architecture-and-city.png"
+                  alt=""
+                  style="width: 40px"
+                />
+                Capital - {{ infoCountries[index].capital[0] }}
+              </h2>
+
+              <h3
+                v-if="infoPlace"
+                style="margin-top: 20px"
+                class="info-about-place"
+              >
+                <v-icon icon="mdi-city-variant-outline" size="x-large" />
+                State - {{ infoPlace.region }}
+              </h3>
+              <p v-if="infoPlace" style="" class="info-about-place">
+                <v-icon icon="mdi-map-marker" size="x-large" />
+                Place - {{ infoPlace.name }}
+              </p>
+              <p v-if="infoPlace" style="" class="info-about-place">
+                <img
+                  src="../assets/image/weather-forecast.png"
+                  alt=""
+                  style="width: 40px"
+                />
+                Temperature - {{ infoPlace.temperature }} &deg;C
+              </p>
+              <span class="info-about-place">
+                <v-icon icon="mdi-clock-outline" size="x-large" />
+                Time - {{ nowHours }}:{{ nowMinutes }}</span
+              >
+            </div>
           </div>
-
-          <div class="country-description">
-            <h2 class="info-about-place">
-              <img
-                src="../assets/image/architecture-and-city.png"
-                alt=""
-                style="width: 40px"
-              />
-              Capital - {{ infoCountries[index].capital[0] }}
-            </h2>
-
-            <h3
-              v-if="infoPlace"
-              style="margin-top: 20px"
-              class="info-about-place"
-            >
-              <img
-                src="../assets/image/empire-state-building.png"
-                alt=""
-                style="width: 40px"
-              />State - {{ infoPlace.region }}
-            </h3>
-            <p v-if="infoPlace" style="" class="info-about-place">
-              <img
-                src="../assets/image/location (1).png"
-                alt=""
-                style="width: 40px"
-              />
-              Place - {{ infoPlace.name }}
-            </p>
-            <p v-if="infoPlace" style="" class="info-about-place">
-              <img
-                src="../assets/image/weather-forecast.png"
-                alt=""
-                style="width: 40px"
-              />
-              Temperature - {{ infoPlace.temperature }} &deg;C
-            </p>
-            <span class="info-about-place">
-              <img
-                src="../assets/image/clock (1).png"
-                alt=""
-                style="width: 40px"
-              />Time - {{ nowHours }}:{{ nowMinutes }}</span
-            >
-          </div>
-        </div>
-      </Transition>
-    </div>
+        </Transition>
+      </div>
+    </v-card>
   </div>
 </template>
 
 <script setup>
+
 import { ref } from "vue";
 
 const props = defineProps({
@@ -82,6 +78,9 @@ const props = defineProps({
   infoPlace: {
     type: Object,
     required: true,
+  },
+  theme: {
+    type: Object,
   },
 });
 
@@ -103,7 +102,6 @@ setInterval(() => {
   right: 100px;
   top: 50%;
   z-index: 1000;
-  background-color: aliceblue;
   max-width: 350px;
   border-radius: 8px;
   text-align: center;

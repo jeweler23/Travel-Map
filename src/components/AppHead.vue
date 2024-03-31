@@ -12,7 +12,7 @@ const props = defineProps<Title>();
 </template>
 <style scoped>
 .card_title {
-  color: #fff;
+  /* color: #fff; */
   font-size: 48px;
   text-shadow: 2px 2px 5px black;
   margin-bottom: 40px;
@@ -28,7 +28,7 @@ const props = defineProps<Title>();
   position: absolute;
   bottom: 50px;
   left: 100px;
-  color: white;
+  /* color: white; */
   font-size: 42px;
   z-index: 1000;
   width: 450px;
