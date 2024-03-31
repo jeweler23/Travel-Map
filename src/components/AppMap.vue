@@ -13,7 +13,6 @@ interface AboutCountry {
 }
 
 const props = defineProps<AboutCountry>();
-console.log(props.infoCountries);
 
 
 const emit = defineEmits<{

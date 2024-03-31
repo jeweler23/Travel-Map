@@ -65,57 +65,60 @@ const countriesStore = useCountriesStore();
 
 const indexCountry = ref(203);
 const infoPlace = reactive<infoPlace>({
-  region: "Moscow",
-  name: "Moscow",
   temperature: 0,
   timezone: 10800,
+  region: "Moscow",
+  name: "Moscow",
 });
 const capitalCoords = ref<[number, number]>([55.7558, 37.6176]);
 const isInput = ref(false);
 
 async function searchCountry(city: string) {
   const info = await countriesStore.searchCountryByCity(city);
-
-  await getSearchCountry(info);
+  if (info) {
+    await getSearchCountry(info);
+  }
 }
 
-async function getSearchCountry(city: cityInfo | undefined) {
+async function getSearchCountry(city: cityInfo) {
   try {
-    console.log(city);
+    isInput.value = true;
+    capitalCoords.value = [city.lat, city.lon];
 
-    console.log(city?.country);
+    //получаем инормацию о месте
+    await countriesStore.getInfoCountry(city.lat, city.lon);
 
-    if (city) {
-      isInput.value = true;
-      capitalCoords.value = [city.lat, city.lon];
+    const dayliForecast = await countriesStore.getDayliForecast(
+      city.lat,
+      city.lon
+    );
+    if (dayliForecast) {
+      [infoPlace.temperature, infoPlace.timezone] = dayliForecast;
+    }
 
-      //получаем инормацию о месте
-      await countriesStore.getInfoCountry(city.lat, city.lon);
+    //получаем информацию о погоде и временной зоне (почему-то)
+    // [infoPlace.temperature, infoPlace.timezone] =
+    //   await countriesStore.getDayliForecast(city.lat, city.lon);
 
-      //получаем информацию о погоде и временной зоне
-      [infoPlace.temperature, infoPlace.timezone] =
-        await countriesStore.getDayliForecast(city.lat, city.lon);
+    const country = countriesStore.country;
 
+    if (country) {
       //получаем информацию о имени места
-      infoPlace.name = (countriesStore.country as cityInfo[])[0].name;
+      infoPlace.name = country.name;
 
       //получаем инорфмацию о области выбранного места
-      infoPlace.region = (countriesStore.country as cityInfo[])[0].state;
-
-      const country = countriesStore.country;
-
-      indexCountry.value = country
-        ? countriesStore.getIdCountry(country, infoCountries)
-        : 203;
+      infoPlace.region = country.state;
     }
+
+    indexCountry.value = country
+      ? countriesStore.getIdCountry(country, infoCountries)
+      : 203;
   } catch (e) {
     console.log(e);
   }
 }
 
-const  fillInfoPlace = async ()=>{
-
-}
+const fillInfoPlace = async () => {};
 
 async function getIdCountries(coord: latlngCountry) {
   isInput.value = false;
@@ -123,14 +126,24 @@ async function getIdCountries(coord: latlngCountry) {
   await countriesStore.getInfoCountry(coord.lat, coord.lng);
 
   const country = countriesStore.country;
-  //получаем информацию о погоде и временной зоне
-  [infoPlace.temperature, infoPlace.timezone] =
-    await countriesStore.getDayliForecast(coord.lat, coord.lng);
-  //получаем информацию о имени места
-  infoPlace.name = (country as cityInfo[])[0].name;
 
-  //получаем инорфмацию о области выбранного места
-  infoPlace.region = (country as cityInfo[])[0].state;
+  if (country) {
+    //получаем информацию о имени места
+    infoPlace.name = country.name;
+
+    //получаем инорфмацию о области выбранного места
+    infoPlace.region = country.state;
+  }
+
+  //получаем информацию о погоде и временной зоне
+  const dayliForecast = await countriesStore.getDayliForecast(
+    coord.lat,
+    coord.lng
+  );
+
+  if (dayliForecast) {
+    [infoPlace.temperature, infoPlace.timezone] = dayliForecast;
+  }
 
   //получаем индекс страны
   indexCountry.value = country
@@ -145,11 +158,12 @@ function getCoordsCapital(countries: InfoCountry[], index: number) {
 }
 
 onMounted(async () => {
-  [infoPlace.temperature, infoPlace.timezone] =
-    await countriesStore.getDayliForecast(
-      capitalCoords.value[0],
-      capitalCoords.value[1]
-    );
+  const dayliForecast = await countriesStore.getDayliForecast(
+    capitalCoords.value[0],
+    capitalCoords.value[1]
+  );
+  if (dayliForecast)
+    [infoPlace.temperature, infoPlace.timezone] = dayliForecast;
 });
 </script>
 
