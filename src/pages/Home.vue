@@ -40,7 +40,7 @@ import Search from "@/components/AppSearch.vue";
 
 import type {
   latlngCountry,
-  cityInfo,
+  infoCity,
   infoPlace,
   InfoCountry,
 } from "../types/type.ts";
@@ -74,13 +74,14 @@ const capitalCoords = ref<[number, number]>([55.7558, 37.6176]);
 const isInput = ref(false);
 
 async function searchCountry(city: string) {
-  const info = await countriesStore.searchCountryByCity(city);
-  if (info) {
-    await getSearchCountry(info);
+  const infoCity = await countriesStore.getInfoAboutCity(city);
+
+  if (infoCity) {
+    await getSearchCountry(infoCity);
   }
 }
 
-async function getSearchCountry(city: cityInfo) {
+async function getSearchCountry(city: infoCity) {
   try {
     isInput.value = true;
     capitalCoords.value = [city.lat, city.lon];
@@ -93,47 +94,17 @@ async function getSearchCountry(city: cityInfo) {
       city.lon
     );
     if (dayliForecast) {
-      [infoPlace.temperature, infoPlace.timezone] = dayliForecast;
+      fillInfoPlace(dayliForecast);
     }
-
-    //получаем информацию о погоде и временной зоне (почему-то)
-    // [infoPlace.temperature, infoPlace.timezone] =
-    //   await countriesStore.getDayliForecast(city.lat, city.lon);
-
-    const country = countriesStore.country;
-
-    if (country) {
-      //получаем информацию о имени места
-      infoPlace.name = country.name;
-
-      //получаем инорфмацию о области выбранного места
-      infoPlace.region = country.state;
-    }
-
-    indexCountry.value = country
-      ? countriesStore.getIdCountry(country, infoCountries)
-      : 203;
   } catch (e) {
     console.log(e);
   }
 }
 
-const fillInfoPlace = async () => {};
-
 async function getIdCountries(coord: latlngCountry) {
   isInput.value = false;
   //получаем инормацию о месте
   await countriesStore.getInfoCountry(coord.lat, coord.lng);
-
-  const country = countriesStore.country;
-
-  if (country) {
-    //получаем информацию о имени места
-    infoPlace.name = country.name;
-
-    //получаем инорфмацию о области выбранного места
-    infoPlace.region = country.state;
-  }
 
   //получаем информацию о погоде и временной зоне
   const dayliForecast = await countriesStore.getDayliForecast(
@@ -142,16 +113,29 @@ async function getIdCountries(coord: latlngCountry) {
   );
 
   if (dayliForecast) {
-    [infoPlace.temperature, infoPlace.timezone] = dayliForecast;
+    fillInfoPlace(dayliForecast);
   }
-
-  //получаем индекс страны
-  indexCountry.value = country
-    ? countriesStore.getIdCountry(country, infoCountries)
-    : 203;
 
   capitalCoords.value = getCoordsCapital(infoCountries, indexCountry.value);
 }
+
+const fillInfoPlace = (dayliForecast: [number, number]) => {
+  if (dayliForecast) {
+    [infoPlace.temperature, infoPlace.timezone] = dayliForecast;
+  }
+  const country = countriesStore.country;
+  if (country) {
+    //получаем информацию о имени места
+    infoPlace.name = country.name;
+
+    //получаем инорфмацию о области выбранного места
+    infoPlace.region = country.state;
+  }
+
+  indexCountry.value = country
+    ? countriesStore.getIdCountry(country, infoCountries)
+    : 203;
+};
 
 function getCoordsCapital(countries: InfoCountry[], index: number) {
   return countries[index].capitalInfo.latlng;

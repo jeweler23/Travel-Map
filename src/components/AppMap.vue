@@ -2,8 +2,7 @@
 import { onUpdated, onMounted, ref } from "vue";
 import * as L from "leaflet";
 
-import type { InfoCountry,latlngCountry } from "../types/type";
-
+import type { InfoCountry, latlngCountry } from "../types/type";
 
 interface AboutCountry {
   capitalMarker: [number, number];
@@ -13,7 +12,6 @@ interface AboutCountry {
 }
 
 const props = defineProps<AboutCountry>();
-
 
 const emit = defineEmits<{
   (e: "getCoordsCountries", value: latlngCountry): Promise<void>;

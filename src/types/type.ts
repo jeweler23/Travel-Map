@@ -3,7 +3,7 @@ export interface latlngCountry {
   lng: number;
 }
 
-export interface cityInfo {
+export interface infoCity {
   country: string;
   lat: number;
   local_names: object;

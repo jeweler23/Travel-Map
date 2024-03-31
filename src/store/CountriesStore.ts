@@ -2,23 +2,10 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { API_KEY } from "../assets/consts/consts.js";
 
-import type { cityInfo, InfoCountry, weatherPlace } from "../types/type";
+import type { infoCity, InfoCountry, weatherPlace } from "../types/type";
 
 export const useCountriesStore = defineStore("countiesStore", () => {
-  const country = ref<cityInfo>();
-
-  // [
-  //   {
-  //     country: "RU",
-  //     lat: 55.7,
-  //     local_names: {
-  //       ru: "Moscow",
-  //     },
-  //     lon: 37.6,
-  //     name: "Moscow",
-  //     state: "Moscow",
-  //   },
-  // ]
+  const country = ref<infoCity>();
 
   // получаем страну по координатам
   const getInfoCountry = async (lat: Number, lng: Number) => {
@@ -34,7 +21,7 @@ export const useCountriesStore = defineStore("countiesStore", () => {
 
   // получаем инфомарцию о стране
   const getIdCountry = (
-    country: cityInfo,
+    country: infoCity,
     infoCountry: Array<InfoCountry>
   ): number => {
     let i = 0;
@@ -72,9 +59,9 @@ export const useCountriesStore = defineStore("countiesStore", () => {
     }
   };
 
-  const searchCountryByCity = async (
+  const getInfoAboutCity = async (
     city: string
-  ): Promise<cityInfo | undefined> => {
+  ): Promise<infoCity | undefined> => {
     try {
       const response = await fetch(
         `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${API_KEY}`
@@ -92,6 +79,6 @@ export const useCountriesStore = defineStore("countiesStore", () => {
     getInfoCountry,
     getIdCountry,
     getDayliForecast,
-    searchCountryByCity,
+    getInfoAboutCity,
   };
 });
