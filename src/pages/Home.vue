@@ -10,9 +10,7 @@
       :infoCountries="infoCountries"
       :index="indexCountry"
       :infoPlace="infoPlace"
-   
     >
-
     </Country>
     <Map
       @getCoordsCountries="getIdCountries"
@@ -39,8 +37,7 @@ import type {
 
 import { useCountriesStore } from "../store/CountriesStore";
 import { infoCountries } from "../assets/consts/index";
-import { onMounted, reactive, ref } from "vue";
-
+import { onMounted, reactive, ref, computed, watch } from "vue";
 
 // //toogle teme
 // import { useTheme } from "vuetify";
@@ -62,6 +59,10 @@ const infoPlace = reactive<infoPlace>({
 });
 const capitalCoords = ref<[number, number]>([55.7558, 37.6176]);
 const isInput = ref(false);
+
+const getCoordsCapital = computed(
+  () => infoCountries[indexCountry.value].capitalInfo.latlng
+);
 
 async function searchCountry(city: string) {
   const infoCity = await countriesStore.getInfoAboutCity(city);
@@ -106,7 +107,7 @@ async function getIdCountries(coord: latlngCountry) {
     fillInfoPlace(dayliForecast);
   }
 
-  capitalCoords.value = getCoordsCapital(infoCountries, indexCountry.value);
+  capitalCoords.value = getCoordsCapital.value;
 }
 
 const fillInfoPlace = (dayliForecast: [number, number]) => {
@@ -127,9 +128,9 @@ const fillInfoPlace = (dayliForecast: [number, number]) => {
     : 203;
 };
 
-function getCoordsCapital(countries: InfoCountry[], index: number) {
-  return countries[index].capitalInfo.latlng;
-}
+// function getCoordsCapital(countries: InfoCountry[], index: number) {
+//   return countries[index].capitalInfo.latlng;
+// }
 
 onMounted(async () => {
   const dayliForecast = await countriesStore.getDayliForecast(
